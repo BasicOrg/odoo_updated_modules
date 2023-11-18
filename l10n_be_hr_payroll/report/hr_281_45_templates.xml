@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <template id="report_281_45">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div t-if="report_data" class="page">
+                        <div class="row">
+                            <div class="col-10 border text-center text-uppercase fw-bold">
+                                281.45 Sheet - Year <span t-esc="report_data['f2002_inkomstenjaar']"/>
+                            </div>
+                            <div class="col-2 border text-center" t-esc="datetime.datetime.now().date()"/>
+                        </div>
+                        <div class="row border">
+                            <div class="col-12">
+                                <strong>1. Nᵒ:</strong> <span t-esc="report_data['f2009_volgnummer']"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 border">
+                                <div class="fw-bold">3. Name and address of income debtor:</div>
+                                <div class="ms-4" t-esc="report_data['v0014_naam']"></div>
+                                <div class="ms-4" t-esc="report_data['v0015_adres']"></div>
+                                <div class="ms-4">
+                                    <span t-esc="report_data['v0016_postcode']"/>
+                                    <span t-esc="report_data['v0017_gemeente']"/>
+                                </div>
+                                <div>
+                                    <span class="fw-bold">Company number: </span>
+                                    <t t-esc="report_data['v0024_nationaalnr']"/>
+                                </div>
+                            </div>
+                            <div class="col-6 border">
+                                <div class="fw-bold">2a. Income recipient</div>
+                                <div class="ms-4" t-esc="report_data['employee'].name"/>
+                                <div class="ms-4" t-esc="report_data['f2015_adres']"/>
+                                <div class="ms-4" >
+                                    <span t-esc="report_data['employee_city']"/>
+                                    <span t-if="'f2016_postcodebelgisch' in report_data" t-esc="report_data['f2016_postcodebelgisch']"/>
+                                </div>
+                                <div>
+                                    <span class="fw-bold">NISS: </span>
+                                    <t t-esc="report_data['f2011_nationaalnr']"/>
+                                </div>
+                                <div>
+                                    <span class="fw-bold">Nature of beneficiary: </span>
+                                    <span>Natural Person</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border">
+                            <div class="col-12 fw-bold mt-1">4. Deducted fees</div>
+                            <div class="row">
+                                <div class="col-7 mt-4">a) income referred to in art. 17, § 1, 3°, CIR 92, with regard to copyright and related rights</div>
+                                <div class="col-5 text-end"><span t-esc="report_data['f45_2064_grossincomea']"/></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-7 mt-4">b) income referred to in art. 17, § 1, 5°, CIR 92</div>
+                                <div class="col-5 text-end"><span t-esc="report_data['f45_2060_grossincomeb']"/></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-7 mt-4">c) if the amount indicated in section a) does not coincide with the amount actually paid in 2022, enter here the amount actually paid in 2022 (including amounts that relate to other taxable periods)</div>
+                                <div class="col-5 text-end"><span t-esc="report_data['f45_2065_actuallypaidgrossincomea']"/></div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-7 mt-4">d) if the amount indicated in section b) does not coincide with the amount actually paid in 2022, enter here the amount actually paid in 2022 (including amounts that relate to other taxable periods)</div>
+                                <div class="col-5 text-end"><span t-esc="report_data['f45_2066_actuallypaidgrossincomeb']"/></div>
+                            </div>
+                        </div>
+                        <div class="row border">
+                            <div class="col-7 fw-bold">5. Amount of retained withholding tax</div>
+                            <div class="col-5 text-end"><span t-esc="report_data['f45_2063_roerendevoorheffing']"/></div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

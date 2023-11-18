@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- India public holiday -->
+        <record id="resource_public_holiday_independence_day_in" model="resource.calendar.leaves">
+            <field name="name">Independence Day</field>
+            <field name="date_from" eval="time.strftime('%Y-08-15 02:30:00')"/>
+            <field name="date_to" eval="time.strftime('%Y-08-15 18:29:59')"/>
+            <field name="work_entry_type_id" ref="hr_work_entry_contract.work_entry_type_leave"></field>
+        </record>
+        <record id="resource_public_holiday_republic_day_in" model="resource.calendar.leaves">
+            <field name="name">Republic Day</field>
+            <field name="date_from" eval="time.strftime('%Y-01-26 02:30:00')"/>
+            <field name="date_to" eval="time.strftime('%Y-01-26 18:29:59')"/>
+            <field name="work_entry_type_id" ref="hr_work_entry_contract.work_entry_type_leave"></field>
+        </record>
+        <record id="resource_public_holiday_gandhi_jayanti_in" model="resource.calendar.leaves">
+            <field name="name">Gandhi Jayanti</field>
+            <field name="date_from" eval="time.strftime('%Y-10-02 02:30:00')"/>
+            <field name="date_to" eval="time.strftime('%Y-10-02 18:29:59')"/>
+            <field name="work_entry_type_id" ref="hr_work_entry_contract.work_entry_type_leave"></field>
+        </record>
+        <record id="resource_public_holiday_makar_sakranti_in" model="resource.calendar.leaves">
+            <field name="name">Makar Sakranti</field>
+            <field name="date_from" eval="time.strftime('%Y-01-14 02:30:00')"/>
+            <field name="date_to" eval="time.strftime('%Y-01-14 18:29:59')"/>
+            <field name="work_entry_type_id" ref="hr_work_entry_contract.work_entry_type_leave"></field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_individual_account">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                        <div t-if="report_data" class="page">
+                            <h2>
+                                <span>Individual Account Report for year </span>
+                                <span t-out="report_data['year']">2023</span>
+                            </h2>
+                            <div class="oe_structure"></div>
+                            <br/>
+                            <tbody>
+                                <table class="table table-sm table-bordered">
+                                    <tr>
+                                        <td><strong>Company Information</strong></td>
+                                        <td>
+                                            <span t-field="employee.company_id.name">Odoo</span><br/>
+                                            <span t-field="employee.company_id.street">Rue du Paradis</span><br/>
+                                            <span t-if="employee.company_id.street2" t-field="employee.company_id.street2">Boulevard de Waterloo</span><br/>
+                                            <span t-field="employee.company_id.city">Eghezee</span>
+                                            <span t-field="employee.company_id.state_id">Limburg</span>
+                                            <span t-field="employee.company_id.zip">6870</span><br/>
+                                            <span t-field="employee.company_id.country_id">Belgium</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="oe_structure"></div>
+                                <table t-if="employee" class="table table-sm table-bordered">
+                                    <tr>
+                                        <td><strong>Name</strong></td>
+                                        <td><span t-field="employee.name">Marc Doe</span></td>
+                                        <td><strong>Designation</strong></td>
+                                        <td><span t-field="employee.job_id">SDE</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Address</strong></td>
+                                        <td colspan="3">
+                                            <span class="w-100 d-block">
+                                                <span t-out="employee.private_street">Rue du Paradis</span><br/>
+                                                <t t-if="employee.private_street2">
+                                                    <span t-out="employee.private_street2">Boulevard de Waterloo</span><br/>
+                                                </t>
+                                                <span t-out="employee.private_zip">9876</span> <span t-out="employee.private_city">Antwerp</span><br/>
+                                                <span t-out="employee.private_country_id.name">Belgium</span><br/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Email</strong></td>
+                                        <td><span t-field="employee.work_email">marc@Doe.com</span></td>
+                                        <td><strong>Identification No</strong></td>
+                                        <td><span t-field="employee.identification_id">123456789</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Bank Account</strong></td>
+                                        <td><span t-field="employee.bank_account_id">Account Number</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Registration Number</strong></td>
+                                        <td><span t-field="employee.registration_number">Reg. No. 98765</span></td>
+                                    </tr>
+                                </table>
+                                <div class="oe_structure"></div>
+                                <table class="table table-bordered table-sm">
+                                    <thead><tr>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">JAN</th>
+                                        <th class="text-center">FEB</th>
+                                        <th class="text-center">MAR</th>
+                                        <th class="text-center">APR</th>
+                                        <th class="text-center">MAY</th>
+                                        <th class="text-center">JUN</th>
+                                        <th class="text-center">JUL</th>
+                                        <th class="text-center">AUG</th>
+                                        <th class="text-center">SEP</th>
+                                        <th class="text-center">OCT</th>
+                                        <th class="text-center">NOV</th>
+                                        <th class="text-center">DEC</th>
+                                    </tr></thead>
+                                    <tr>
+                                        <td><strong>Worked Days</strong></td>
+                                        <td colspan="12"/>
+                                    </tr>
+                                    <div class="oe_structure"></div>
+                                    <t t-foreach="report_data['worked_days']" t-as="worked_day">
+                                        <t t-set="value" t-value="report_data['worked_days'][worked_day]['month']"/>
+                                        <t t-set="name" t-value="False"/>
+
+                                        <t t-foreach="[0,1,2,3,4,5,6,7,8,9,10,11]" t-as="c">
+                                            <t t-if="value[c]['name'] != False">
+                                                <t t-set="name" t-value="value[c]['name']"/>
+                                            </t>
+                                        </t>
+                                        <t t-if="name != False">
+                                            <tr>
+                                                <td><span t-out="name + '(days)'">Example Day</span></td>
+                                                <t t-foreach="[0,1,2,3,4,5,6,7,8,9,10,11]" t-as="m">
+                                                    <t t-if="value[m]['number_of_days'] != 0">
+                                                        <td class="text-end"><span t-out="round(value[m]['number_of_days'], 2)">2.00</span></td>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <td class="text-center">/</td>
+                                                    </t>
+                                                </t>
+                                            </tr>
+                                            <tr>
+                                                <td><span t-out="name + '(hours)'">Example Hour</span></td>
+                                                <t t-foreach="[0,1,2,3,4,5,6,7,8,9,10,11]" t-as="m">
+                                                    <t t-if="value[m]['number_of_days'] != 0">
+                                                        <td class="text-end"><span t-out="round(value[m]['number_of_hours'], 2)">8.00</span></td>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <td class="text-center">/</td>
+                                                    </t>
+                                                </t>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <div class="oe_structure"></div>
+
+                                    <tr>
+                                        <td><strong>Salary Computation</strong></td>
+                                        <td colspan="12"/>
+                                    </tr>
+                                    <tr t-foreach="report_data['rules']" t-as="rule">
+                                        <t t-set="value" t-value="report_data['rules'][rule]['month']"/>
+                                        <t t-set="name" t-value="False"/>
+
+                                        <t t-foreach="[0,1,2,3,4,5,6,7,8,9,10,11]" t-as="c">
+                                            <t t-if="value[c]['name'] != False">
+                                                <t t-set="name" t-value="value[c]['name']"/>
+                                            </t>
+                                        </t>
+                                        <t t-if="name != False">
+                                            <td><span t-out="name">Demo Name</span></td>
+                                            <t t-foreach="[0,1,2,3,4,5,6,7,8,9,10,11]" t-as="m">
+                                                <t t-if="value[m]['total'] != 0">
+                                                    <td class="text-end"><t t-esc="round(value[m]['total'], 2)"/></td>
+                                                </t>
+                                                <t t-else="">
+                                                    <td class="text-center">/</td>
+                                                </t>
+                                            </t>
+                                        </t>
+                                    </tr>
+                                </table>
+                                <div class="oe_structure"></div>
+                            <p style="page-break-before:always;"></p>
+                                <table class="table table-bordered table-sm">
+                                    <thead><tr>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Quarter 1</th>
+                                        <th class="text-center">Quarter 2</th>
+                                        <th class="text-center">Quarter 3</th>
+                                        <th class="text-center">Quarter 4</th>
+                                        <th class="text-center">Total Year</th>
+                                    </tr></thead>
+                                    <tr>
+                                        <td><strong>Worked Time</strong></td>
+                                        <td colspan="5"/>
+                                    </tr>
+                                    <div class="oe_structure"></div>
+                                    <t t-foreach="report_data['worked_days']" t-as="worked_day">
+                                        <t t-set="value_q" t-value="report_data['worked_days'][worked_day]['quarter']"/>
+                                        <t t-set="value_y" t-value="report_data['worked_days'][worked_day]['year']"/>
+                                        <t t-set="name_t" t-value="False"/>
+                                        <t t-foreach="[0,1,2,3]" t-as="c">
+                                            <t t-if="value_q[c]['name'] != False">
+                                                <t t-set="name_t" t-value="value_q[c]['name'] + ' (days)'"/>
+                                            </t>
+                                        </t>
+                                        <t t-if="name_t != False">
+                                            <tr>
+                                                <td><span t-out="name_t">Demo Name</span></td>
+                                                <t t-foreach="[0,1,2,3]" t-as="q">
+                                                    <td t-if="value_q[q]['number_of_days'] != 0" class="text-end"><span t-out="round(value_q[q]['number_of_days'], 2)">5.00</span></td>
+                                                    <td t-else="" class="text-center">/</td>
+                                                </t>
+                                                <td t-if="value_y['number_of_days'] != 0" class="text-end"><span t-out="round(value_y['number_of_days'], 2)">20.00</span></td>
+                                                <td t-else="" class="text-center">/</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span>Attendance (hours)</span></td>
+                                                <t t-foreach="[0,1,2,3]" t-as="q">
+                                                    <td t-if="value_q[q]['number_of_days'] != 0" class="text-end"><span t-out="round(value_q[q]['number_of_hours'], 2)">8.00</span></td>
+                                                    <td t-else="" class="text-center">/</td>
+                                                </t>
+                                                <td t-if="value_y['number_of_hours'] != 0" class="text-end"><span t-out="round(value_y['number_of_hours'], 2)">32.00</span></td>
+                                                <td t-else="" class="text-center">/</td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <tr>
+                                        <td><strong>Salary Computation</strong></td>
+                                        <td colspan="5"/>
+                                    </tr>
+                                    <tr t-foreach="report_data['rules']" t-as="rule">
+                                        <t t-set="value_q" t-value="report_data['rules'][rule]['quarter']"/>
+                                        <t t-set="value_y" t-value="report_data['rules'][rule]['year']"/>
+                                        <t t-set="name_t" t-value="False"/>
+                                        <t t-foreach="[0,1,2,3]" t-as="c">
+                                            <t t-if="value_q[c]['name'] != False">
+                                                <t t-set="name_t" t-value="value_q[c]['name']"/>
+                                            </t>
+                                        </t>
+                                        <t t-if="name_t != False">
+                                            <td><span t-out="name_t">Demo Name</span></td>
+                                            <t t-foreach="[0,1,2,3]" t-as="q">
+                                                <td t-if="value_q[q]['total'] != 0" class="text-end"><span t-out="round(value_q[q]['total'], 2)">1500.00</span>></td>
+                                                <td t-else="" class="text-center">/</td>
+                                            </t>
+                                            <td t-if="value_y['total'] != 0" class="text-end"><span t-out="round(value_y['total'], 2)">6000.00</span></td>
+                                            <td t-else="" class="text-center">/</td>
+                                        </t>
+                                    </tr>
+                                </table>
+                                <div class="oe_structure"></div>
+                            </tbody>
+                        </div>
+                        <p style="page-break-before:always;"></p>
+                    </t>
+                </t>
+        </template>
+    </data>
+</odoo>

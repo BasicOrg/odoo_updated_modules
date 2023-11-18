@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_financial_report_ro_bs_smle" model="account.report">
+        <field name="name">Code 10 - Balance Sheet</field>
+        <field name="root_report_id" ref="account_reports.balance_sheet"/>
+        <field name="filter_unfold_all" eval="True"/>
+        <field name="filter_date_range" eval="False"/>
+        <field name="filter_journals" eval="True"/>
+        <field name="filter_period_comparison" eval="True"/>
+        <field name="custom_handler_model_id" eval="False"/>
+        <field name="country_id" ref="base.ro"/>
+        <field name="filter_multi_company">selector</field>
+        <field name="column_ids">
+            <record id="account_financial_report_ro_bs_smle_column" model="account.report.column">
+                <field name="name">Balance</field>
+                <field name="expression_label">balance</field>
+            </record>
+        </field>
+        <field name="line_ids">
+            <record id="account_financial_report_ro_bs_smle_A" model="account.report.line">
+                <field name="name">A. NON-CURRENT ASSETS</field>
+                <field name="code">RO_BS_smle_A_00_A</field>
+                <field name="hierarchy_level" eval="0"/>
+                <field name="children_ids">
+                    <record id="account_financial_report_ro_bs_smle_A_01" model="account.report.line">
+                        <field name="name">I. INTANGIBLE ASSETS | 01</field>
+                        <field name="code">RO_BS_smle_A_01</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">203 + 4904 + 290 + 280 + 205 + 4094 + 201 + 208 + 2071 + 206</field>
+                </record>
+                    <record id="account_financial_report_ro_bs_smle_A_02" model="account.report.line">
+                        <field name="name">II. TANGIBLE ASSETS | 02</field>
+                        <field name="code">RO_BS_smle_A_02</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">291 + 21\(218,219) + 223 + 231 + 4093 + 227 + 224 + 2935 + 2931 + 235 + 281</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_A_03" model="account.report.line">
+                        <field name="name">III. FINANCIAL ASSETS | 03</field>
+                        <field name="code">RO_BS_smle_A_03</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">2675\(26751) + 262 + 296\(29661,29681) + 265 + 2671 + 2676\(26761) + 2678 + 264 + 2672 + 2679 + 263 + 266 + 2677 + 261</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_A_04" model="account.report.line">
+                        <field name="name">NON CURRENT ASSETS - TOTAL | 04</field>
+                        <field name="code">RO_BS_smle_A_04</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="aggregation_formula">RO_BS_smle_A_01.balance + RO_BS_smle_A_02.balance + RO_BS_smle_A_03.balance</field>
+                    </record>
+                </field>
+            </record>
+            <record id="account_financial_report_ro_bs_smle_B" model="account.report.line">
+                <field name="name">B. CURRENT ASSETS</field>
+                <field name="code">RO_BS_smle_B</field>
+                <field name="hierarchy_level" eval="0"/>
+                <field name="children_ids">
+                    <record id="account_financial_report_ro_bs_smle_B_05" model="account.report.line">
+                        <field name="name">I. INVENTORIES | 05</field>
+                        <field name="code">RO_BS_smle_B_05</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">328 + 346 + 345 + 44282 + 331 + 322 + 361 + 371 + 302 + 332 + 388 + 39\(399) + 301 + 378 + 327 + 308 + 326 + 354 + 347 + 356 + 348 + 323 + 351 + 358 + 341 + 381 + 357 + 321 + 303 + 368</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_B_06" model="account.report.line">
+                        <field name="name">II. RECEIVABLES 1. | 06</field>
+                        <field name="code">RO_BS_smle_B_06</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="domain_formula">sum([ '|', ('account_id.code', '=like', '267%'), '|', ('account_id.code', '=like', '29661%'), '|', ('account_id.code', '=like', '29681%'), '|', ('account_id.code', '=like', '4092%'), '|', ('account_id.code', '=like', '411%'), '|', ('account_id.code', '=like', '413%'), '|', ('account_id.code', '=like', '418%'), '|', ('account_id.code', '=like', '425%'), '|', ('account_id.code', '=like', '4282%'), '|', ('account_id.code', '=like', '4382%'), '|', ('account_id.code', '=like', '4424%'), '|', ('account_id.code', '=like', '445%'), '|', ('account_id.code', '=like', '4482%'), '|', ('account_id.code', '=like', '4582%'), '|', ('account_id.code', '=like', '461%'), '|', ('account_id.code', '=like', '4662%'), '|', ('account_id.code', '=like', '491%'), '|', ('account_id.code', '=like', '495%'), '|', ('account_id.code', '=like', '496%'), '|', ('account_id.code', '=like', '4902%'), '|', ('account_id.code', '=like', '5187%'), '&amp;', ('debit', '&gt;', 0.0), '|', ('account_id.code', '=like', '431%'), '|', ('account_id.code', '=like', '436%'), '|', ('account_id.code', '=like', '437%'), '|', ('account_id.code', '=like', '441%'), '|', ('account_id.code', '=like', '44281%'), '|', ('account_id.code', '=like', '444%'), '|', ('account_id.code', '=like', '446%'), '|', ('account_id.code', '=like', '447%'), '|', ('account_id.code', '=like', '451%'), '|', ('account_id.code', '=like', '453%'), '|', ('account_id.code', '=like', '456%'), ('account_id.code', '=like', '473%'), '!', '|', ('account_id.code', '=like', '2671%'), '|', ('account_id.code', '=like', '2672%'), '|', ('account_id.code', '=like', '26750%'), '|', ('account_id.code', '=like', '26752%'), '|', ('account_id.code', '=like', '26753%'), '|', ('account_id.code', '=like', '26754%'), '|', ('account_id.code', '=like', '26755%'), '|', ('account_id.code', '=like', '26756%'), '|', ('account_id.code', '=like', '26757%'), '|', ('account_id.code', '=like', '26758%'), '|', ('account_id.code', '=like', '26759%'), '|', ('account_id.code', '=like', '26760%'), '|', ('account_id.code', '=like', '26762%'), '|', ('account_id.code', '=like', '26763%'), '|', ('account_id.code', '=like', '26764%'), '|', ('account_id.code', '=like', '26765%'), '|', ('account_id.code', '=like', '26766%'), '|', ('account_id.code', '=like', '26767%'), '|', ('account_id.code', '=like', '26768%'), '|', ('account_id.code', '=like', '26769%'), '|', ('account_id.code', '=like', '2677%'), '|', ('account_id.code', '=like', '2678%'), ('account_id.code', '=like', '2679%'), ])</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_B_07" model="account.report.line">
+                        <field name="name">
+                            2. Receivables representing dividends distributed during the financial year | 07
+                        </field>
+                        <field name="code">RO_BS_smle_B_07</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">463</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_B_08" model="account.report.line">
+                        <field name="name">TOTAL | 08</field>
+                        <field name="code">RO_BS_smle_B_08</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="aggregation_formula">RO_BS_smle_B_06.balance + RO_BS_smle_B_07.balance</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_B_09" model="account.report.line">
+                        <field name="name">III. SHORT-TERM INVESTMENTS | 09</field>
+                        <field name="code">RO_BS_smle_B_09</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">595 + 508\(5088) + 591 + 501 + 5113 + 507 + 596 + 505 + 5114 + 598 + 506</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_B_10" model="account.report.line">
+                        <field name="name">IV. CASH AND BANK ACCOUNTS | 10</field>
+                        <field name="code">RO_BS_smle_B_10</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">512 + 542 + 532 + 531 + 541 + 5112 + 5088</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_B_11" model="account.report.line">
+                        <field name="name">CURRENT ASSETS - TOTAL | 11</field>
+                        <field name="code">RO_BS_smle_B_11</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="aggregation_formula">RO_BS_smle_B_05.balance + RO_BS_smle_B_08.balance + RO_BS_smle_B_09.balance + RO_BS_smle_B_10.balance</field>
+                    </record>
+                </field>
+            </record>
+            <record id="account_financial_report_ro_bs_smle_C_12" model="account.report.line">
+                <field name="name">C. PREPAYMENTS | 12</field>
+                <field name="code">RO_BS_smle_C_12</field>
+                <field name="hierarchy_level" eval="0"/>
+                <field name="aggregation_formula">RO_BS_smle_C_13.balance + RO_BS_smle_C_14.balance</field>
+                <field name="children_ids">
+                    <record id="account_financial_report_ro_bs_smle_C_13" model="account.report.line">
+                        <field name="name">Amounts to be resumed in a period of up to one year | 13</field>
+                        <field name="code">RO_BS_smle_C_13</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">471\(4712)</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_C_14" model="account.report.line">
+                        <field name="name">Amounts to be resumed in a period of more than one year | 14</field>
+                        <field name="code">RO_BS_smle_C_14</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">4712</field>
+                    </record>
+                </field>
+            </record>
+            <record id="account_financial_report_ro_bs_smle_D_15" model="account.report.line">
+                <field name="name">D. LIABILITIES: AMOUNTS TO BE PAID WITHIN A PERIOD OF UP TO ONE YEAR | 15</field>
+                <field name="code">RO_BS_smle_D_15</field>
+                <field name="groupby">account_id</field>
+                <field name="hierarchy_level" eval="0"/>
+                <field name="foldable" eval="True"/>
+                <field name="domain_formula">-sum([ '|', ('account_id.code', '=like', '161%'), '|', ('account_id.code', '=like', '162%'), '|', ('account_id.code', '=like', '166%'), '|', ('account_id.code', '=like', '167%'), '|', ('account_id.code', '=like', '168%'), '|', ('account_id.code', '=like', '169%'), '|', ('account_id.code', '=like', '269%'), '|', ('account_id.code', '=like', '401%'), '|', ('account_id.code', '=like', '403%'), '|', ('account_id.code', '=like', '404%'), '|', ('account_id.code', '=like', '405%'), '|', ('account_id.code', '=like', '408%'), '|', ('account_id.code', '=like', '419%'), '|', ('account_id.code', '=like', '421%'), '|', ('account_id.code', '=like', '423%'), '|', ('account_id.code', '=like', '424%'), '|', ('account_id.code', '=like', '426%'), '|', ('account_id.code', '=like', '427%'), '|', ('account_id.code', '=like', '4281%'), '|', ('account_id.code', '=like', '4381%'), '|', ('account_id.code', '=like', '4423%'), '|', ('account_id.code', '=like', '4481%'), '|', ('account_id.code', '=like', '455%'), '|', ('account_id.code', '=like', '457%'), '|', ('account_id.code', '=like', '4581%'), '|', ('account_id.code', '=like', '462%'), '|', ('account_id.code', '=like', '4661%'), '|', ('account_id.code', '=like', '509%'), '|', ('account_id.code', '=like', '5186%'), '|', ('account_id.code', '=like', '519%'), '&amp;', ('credit', '&gt;', 0.0), '|', ('account_id.code', '=like', '431%'), '|', ('account_id.code', '=like', '436%'), '|', ('account_id.code', '=like', '437%'), '|', ('account_id.code', '=like', '441%'), '|', ('account_id.code', '=like', '44281%'), '|', ('account_id.code', '=like', '444%'), '|', ('account_id.code', '=like', '446%'), '|', ('account_id.code', '=like', '447%'), '|', ('account_id.code', '=like', '451%'), '|', ('account_id.code', '=like', '453%'), '|', ('account_id.code', '=like', '456%'), ('account_id.code', '=like', '473%'), '!', '|', ('account_id.code', '=like', '16142%'), '|', ('account_id.code', '=like', '16152%'), '|', ('account_id.code', '=like', '16172%'), '|', ('account_id.code', '=like', '16182%'), '|', ('account_id.code', '=like', '16212%'), '|', ('account_id.code', '=like', '16222%'), '|', ('account_id.code', '=like', '16232%'), '|', ('account_id.code', '=like', '16242%'), '|', ('account_id.code', '=like', '16252%'), '|', ('account_id.code', '=like', '16262%'), '|', ('account_id.code', '=like', '16272%'), '|', ('account_id.code', '=like', '16612%'), '|', ('account_id.code', '=like', '16622%'), '|', ('account_id.code', '=like', '16632%'), '|', ('account_id.code', '=like', '1672%'), '|', ('account_id.code', '=like', '16812%'), '|', ('account_id.code', '=like', '16822%'), '|', ('account_id.code', '=like', '16852%'), '|', ('account_id.code', '=like', '16862%'), '|', ('account_id.code', '=like', '16872%'), '|', ('account_id.code', '=like', '16912%'), '|', ('account_id.code', '=like', '16922%'), '|', ('account_id.code', '=like', '26912%'), '|', ('account_id.code', '=like', '26922%'), '|', ('account_id.code', '=like', '26932%'), '|', ('account_id.code', '=like', '26952%'), '|', ('account_id.code', '=like', '4012%'), '|', ('account_id.code', '=like', '4032%'), '|', ('account_id.code', '=like', '4042%'), '|', ('account_id.code', '=like', '4052%'), '|', ('account_id.code', '=like', '4082%'), '|', ('account_id.code', '=like', '4192%'), '|', ('account_id.code', '=like', '4212%'), '|', ('account_id.code', '=like', '4232%'), '|', ('account_id.code', '=like', '4242%'), '|', ('account_id.code', '=like', '4262%'), '|', ('account_id.code', '=like', '4272%'), '|', ('account_id.code', '=like', '42812%'), '|', ('account_id.code', '=like', '43812%'), '|', ('account_id.code', '=like', '44112%'), '|', ('account_id.code', '=like', '44232%'), '|', ('account_id.code', '=like', '44812%'), '|', ('account_id.code', '=like', '45512%'), '|', ('account_id.code', '=like', '45582%'), '|', ('account_id.code', '=like', '4572%'), '|', ('account_id.code', '=like', '45812%'), '|', ('account_id.code', '=like', '4622%'), '|', ('account_id.code', '=like', '46612%'), '|', ('account_id.code', '=like', '50912%'), '|', ('account_id.code', '=like', '50922%'), '|', ('account_id.code', '=like', '51862%'), '|', ('account_id.code', '=like', '51912%'), '|', ('account_id.code', '=like', '51922%'), '|', ('account_id.code', '=like', '51932%'), '|', ('account_id.code', '=like', '51942%'), '|', ('account_id.code', '=like', '51952%'), '|', ('account_id.code', '=like', '51962%'), '|', ('account_id.code', '=like', '51972%'), '|', ('account_id.code', '=like', '51982%'), '|', ('account_id.code', '=like', '51992%'), '|', ('account_id.code', '=like', '43112%'), '|', ('account_id.code', '=like', '43122%'), '|', ('account_id.code', '=like', '43132%'), '|', ('account_id.code', '=like', '43142%'), '|', ('account_id.code', '=like', '43152%'), '|', ('account_id.code', '=like', '43162%'), '|', ('account_id.code', '=like', '43182%'), '|', ('account_id.code', '=like', '4362%'), '|', ('account_id.code', '=like', '43712%'), '|', ('account_id.code', '=like', '43722%'), '|', ('account_id.code', '=like', '44112%'), '|', ('account_id.code', '=like', '44182%'), '|', ('account_id.code', '=like', '442812%'), '|', ('account_id.code', '=like', '44125%'), '|', ('account_id.code', '=like', '44182%'), '|', ('account_id.code', '=like', '442812%'), '|', ('account_id.code', '=like', '4442%'), '|', ('account_id.code', '=like', '4462%'), '|', ('account_id.code', '=like', '4472%'), '|', ('account_id.code', '=like', '45112%'), '|', ('account_id.code', '=like', '45182%'), '|', ('account_id.code', '=like', '45312%'), '|', ('account_id.code', '=like', '45382%'), '|', ('account_id.code', '=like', '4562%'), ('account_id.code', '=like', '4732%'), ])</field>
+            </record>
+            <record id="account_financial_report_ro_bs_smle_E_16" model="account.report.line">
+                <field name="name">E. NET CURRENT ASSETS/LIABILITIES | 16</field>
+                <field name="code">RO_BS_smle_E_16</field>
+                <field name="hierarchy_level" eval="0"/>
+                <field name="aggregation_formula">RO_BS_smle_B_11.balance + RO_BS_smle_C_13.balance - RO_BS_smle_D_15.balance - RO_BS_smle_I_22.balance - RO_BS_smle_I_25.balance - RO_BS_smle_I_28.balance</field>
+            </record>
+            <record id="account_financial_report_ro_bs_smle_F_17" model="account.report.line">
+                <field name="name">F. TOTAL ASSETS MINUS CURRENT LIABILITIES | 17</field>
+                <field name="code">RO_BS_smle_F_17</field>
+                <field name="hierarchy_level" eval="0"/>
+                <field name="aggregation_formula">RO_BS_smle_A_04.balance + RO_BS_smle_C_14.balance + RO_BS_smle_E_16.balance</field>
+            </record>
+            <record id="account_financial_report_ro_bs_smle_G_18" model="account.report.line">
+                <field name="name">G. LIABILITIES: AMOUNTS TO BE PAID OVER A PERIOD OF MORE THAN ONE YEAR | 18</field>
+                <field name="code">RO_BS_smle_G_18</field>
+                <field name="groupby">account_id</field>
+                <field name="hierarchy_level" eval="0"/>
+                <field name="foldable" eval="True"/>
+                <field name="domain_formula">-sum([ '|', ('account_id.code', '=like', '16142%'), '|', ('account_id.code', '=like', '16152%'), '|', ('account_id.code', '=like', '16172%'), '|', ('account_id.code', '=like', '16182%'), '|', ('account_id.code', '=like', '16212%'), '|', ('account_id.code', '=like', '16222%'), '|', ('account_id.code', '=like', '16232%'), '|', ('account_id.code', '=like', '16242%'), '|', ('account_id.code', '=like', '16252%'), '|', ('account_id.code', '=like', '16262%'), '|', ('account_id.code', '=like', '16272%'), '|', ('account_id.code', '=like', '16612%'), '|', ('account_id.code', '=like', '16622%'), '|', ('account_id.code', '=like', '16632%'), '|', ('account_id.code', '=like', '1672%'), '|', ('account_id.code', '=like', '16812%'), '|', ('account_id.code', '=like', '16822%'), '|', ('account_id.code', '=like', '16852%'), '|', ('account_id.code', '=like', '16862%'), '|', ('account_id.code', '=like', '16872%'), '|', ('account_id.code', '=like', '16912%'), '|', ('account_id.code', '=like', '16922%'), '|', ('account_id.code', '=like', '26912%'), '|', ('account_id.code', '=like', '26922%'), '|', ('account_id.code', '=like', '26932%'), '|', ('account_id.code', '=like', '26952%'), '|', ('account_id.code', '=like', '4012%'), '|', ('account_id.code', '=like', '4032%'), '|', ('account_id.code', '=like', '4042%'), '|', ('account_id.code', '=like', '4052%'), '|', ('account_id.code', '=like', '4082%'), '|', ('account_id.code', '=like', '4192%'), '|', ('account_id.code', '=like', '4212%'), '|', ('account_id.code', '=like', '4232%'), '|', ('account_id.code', '=like', '4242%'), '|', ('account_id.code', '=like', '4262%'), '|', ('account_id.code', '=like', '4272%'), '|', ('account_id.code', '=like', '42812%'), '|', ('account_id.code', '=like', '43812%'), '|', ('account_id.code', '=like', '44112%'), '|', ('account_id.code', '=like', '44182%'), '|', ('account_id.code', '=like', '44232%'), '|', ('account_id.code', '=like', '44812%'), '|', ('account_id.code', '=like', '45512%'), '|', ('account_id.code', '=like', '4572%'), '|', ('account_id.code', '=like', '45582%'), '|', ('account_id.code', '=like', '45812%'), '|', ('account_id.code', '=like', '4622%'), '|', ('account_id.code', '=like', '46612%'), '|', ('account_id.code', '=like', '50912%'), '|', ('account_id.code', '=like', '50922%'), '|', ('account_id.code', '=like', '51862%'), '|', ('account_id.code', '=like', '51912%'), '|', ('account_id.code', '=like', '51922%'), '|', ('account_id.code', '=like', '51932%'), '|', ('account_id.code', '=like', '51942%'), '|', ('account_id.code', '=like', '51952%'), '|', ('account_id.code', '=like', '51962%'), '|', ('account_id.code', '=like', '51972%'), '|', ('account_id.code', '=like', '51982%'), '|', ('account_id.code', '=like', '51992%'), '&amp;', ('credit', '&gt;', 0.0), '|', ('account_id.code', '=like', '43112%'), '|', ('account_id.code', '=like', '43122%'), '|', ('account_id.code', '=like', '43132%'), '|', ('account_id.code', '=like', '43142%'), '|', ('account_id.code', '=like', '43152%'), '|', ('account_id.code', '=like', '43162%'), '|', ('account_id.code', '=like', '4362%'), '|', ('account_id.code', '=like', '43712%'), '|', ('account_id.code', '=like', '43722%'), '|', ('account_id.code', '=like', '44112%'), '|', ('account_id.code', '=like', '44152%'), '|', ('account_id.code', '=like', '44182%'), '|', ('account_id.code', '=like', '442812%'), '|', ('account_id.code', '=like', '4442%'), '|', ('account_id.code', '=like', '4462%'), '|', ('account_id.code', '=like', '4472%'), '|', ('account_id.code', '=like', '45112%'), '|', ('account_id.code', '=like', '45182%'), '|', ('account_id.code', '=like', '45312%'), '|', ('account_id.code', '=like', '45382%'), '|', ('account_id.code', '=like', '4562%'), ('account_id.code', '=like', '4732%'), ])</field>
+            </record>
+            <record id="account_financial_report_ro_bs_smle_H_19" model="account.report.line">
+                <field name="name">H. PROVISIONS | 19</field>
+                <field name="code">RO_BS_smle_H_19</field>
+                <field name="groupby">account_id</field>
+                <field name="hierarchy_level" eval="0"/>
+                <field name="foldable" eval="True"/>
+                <field name="account_codes_formula">151</field>
+            </record>
+            <record id="account_financial_report_ro_bs_smle_I_20" model="account.report.line">
+                <field name="name">I. DEFERRED INCOME, of which: | 20</field>
+                <field name="code">RO_BS_smle_I_20</field>
+                <field name="hierarchy_level" eval="0"/>
+                <field name="aggregation_formula">RO_BS_smle_I_21.balance + RO_BS_smle_I_24.balance + RO_BS_smle_I_27.balance + RO_BS_smle_I_30.balance</field>
+                <field name="children_ids">
+                    <record id="account_financial_report_ro_bs_smle_I_21" model="account.report.line">
+                        <field name="name">1. Investment grants | 21</field>
+                        <field name="code">RO_BS_smle_I_21</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="aggregation_formula">RO_BS_smle_I_22.balance + RO_BS_smle_I_23.balance</field>
+                        <field name="children_ids">
+                            <record id="account_financial_report_ro_bs_smle_I_22" model="account.report.line">
+                                <field name="name">Amounts payable in a period of up to one year | 22</field>
+                                <field name="code">RO_BS_smle_I_22</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">-4753\(47532) - 4752\(47522) - 4754\(47542) - 4758\(47582) - 4751\(47512)</field>
+                            </record>
+                            <record id="account_financial_report_ro_bs_smle_I_23" model="account.report.line">
+                                <field name="name">Amounts payable in a period of more than one year | 23</field>
+                                <field name="code">RO_BS_smle_I_23</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">-47582 - 47522 - 47532 - 47512 - 47542</field>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_I_24" model="account.report.line">
+                        <field name="name">2. Revenues recorded in advance | 24</field>
+                        <field name="code">RO_BS_smle_I_24</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="aggregation_formula">RO_BS_smle_I_25.balance + RO_BS_smle_I_26.balance</field>
+                        <field name="children_ids">
+                            <record id="account_financial_report_ro_bs_smle_I_25" model="account.report.line">
+                                <field name="name">Amounts payable in a period of up to one year | 25</field>
+                                <field name="code">RO_BS_smle_I_25</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">-472\(4722)</field>
+                            </record>
+                            <record id="account_financial_report_ro_bs_smle_I_26" model="account.report.line">
+                                <field name="name">Amounts payable in a period of more than one year | 26</field>
+                                <field name="code">RO_BS_smle_I_26</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">-4722</field>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_I_27" model="account.report.line">
+                        <field name="name">3. Advance income related to assets received by transfer from customers | 27</field>
+                        <field name="code">RO_BS_smle_I_27</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="aggregation_formula">RO_BS_smle_I_28.balance + RO_BS_smle_I_29.balance</field>
+                        <field name="children_ids">
+                            <record id="account_financial_report_ro_bs_smle_I_28" model="account.report.line">
+                                <field name="name">Amounts payable in a period of up to one year | 28</field>
+                                <field name="code">RO_BS_smle_I_28</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">-478\(4782)</field>
+                            </record>
+                            <record id="account_financial_report_ro_bs_smle_I_29" model="account.report.line">
+                                <field name="name">Amounts payable in a period of more than one year | 29</field>
+                                <field name="code">RO_BS_smle_I_29</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">-4782</field>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_I_30" model="account.report.line">
+                        <field name="name">Negative goodwill | 30</field>
+                        <field name="code">RO_BS_smle_I_30</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">-2075</field>
+                    </record>
+                </field>
+            </record>
+            <record id="account_financial_report_ro_bs_smle_J" model="account.report.line">
+                <field name="name">J. EQUITY AND RESERVES</field>
+                <field name="code">RO_BS_smle_J_00</field>
+                <field name="hierarchy_level" eval="0"/>
+                <field name="children_ids">
+                    <record id="account_financial_report_ro_bs_smle_J_31" model="account.report.line">
+                        <field name="name">I. EQUITY, of which: | 31</field>
+                        <field name="code">RO_BS_smle_J_31</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="aggregation_formula">RO_BS_smle_J_32.balance + RO_BS_smle_J_33.balance + RO_BS_smle_J_34.balance + RO_BS_smle_J_35.balance + RO_BS_smle_J_36.balance</field>
+                        <field name="children_ids">
+                            <record id="account_financial_report_ro_bs_smle_J_32" model="account.report.line">
+                                <field name="name">1. Paid subscribed capital | 32</field>
+                                <field name="code">RO_BS_smle_J_32</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">1012</field>
+                            </record>
+                            <record id="account_financial_report_ro_bs_smle_J_33" model="account.report.line">
+                                <field name="name">2. Unpaid subscribed capital | 33</field>
+                                <field name="code">RO_BS_smle_J_33</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">1011</field>
+                            </record>
+                            <record id="account_financial_report_ro_bs_smle_J_34" model="account.report.line">
+                                <field name="name">3. State-owned patrimony | 34</field>
+                                <field name="code">RO_BS_smle_J_34</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">1015</field>
+                            </record>
+                            <record id="account_financial_report_ro_bs_smle_J_35" model="account.report.line">
+                                <field name="name">4. State-own patrimony research and development institutes | 35</field>
+                                <field name="code">RO_BS_smle_J_35</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">1018</field>
+                            </record>
+                            <record id="account_financial_report_ro_bs_smle_J_36" model="account.report.line">
+                                <field name="name">5. Other equity items | 36</field>
+                                <field name="code">RO_BS_smle_J_36</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">1031</field>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_J_37" model="account.report.line">
+                        <field name="name">II. SHARES PREMIUM | 37</field>
+                        <field name="code">RO_BS_smle_J_37</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">104</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_J_38" model="account.report.line">
+                        <field name="name">III. REVALUATION RESERVES | 38</field>
+                        <field name="code">RO_BS_smle_J_38</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">105</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_J_39" model="account.report.line">
+                        <field name="name">IV. PROVISIONS | 39</field>
+                        <field name="code">RO_BS_smle_J_39</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">106</field>
+                        <field name="children_ids">
+                            <record id="account_financial_report_ro_bs_smle_J_40" model="account.report.line">
+                                <field name="name">Own shares | 40</field>
+                                <field name="code">RO_BS_smle_J_40</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">109</field>
+                            </record>
+                            <record id="account_financial_report_ro_bs_smle_J_41" model="account.report.line">
+                                <field name="name">Earnings related to equity | 41</field>
+                                <field name="code">RO_BS_smle_J_41</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">141</field>
+                            </record>
+                            <record id="account_financial_report_ro_bs_smle_J_42" model="account.report.line">
+                                <field name="name">Losses related to equity | 42</field>
+                                <field name="code">RO_BS_smle_J_42</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="account_codes_formula">-149</field>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_J_43-44" model="account.report.line">
+                        <field name="name">V. REPORTED PROFIT OR LOSS</field>
+                        <field name="code">RO_BS_smle_J_43-RO_BS_smle_J_44</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="expression_ids">
+                            <record id="account_financial_report_ro_bs_smle_J_43-44_balance"
+                                    model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">aggregation</field>
+                                <field name="formula">RO_BS_smle_J_43.balance - RO_BS_smle_J_44.balance</field>
+                            </record>
+                        </field>
+                        <field name="children_ids">
+                            <record id="account_financial_report_ro_bs_smle_J_43" model="account.report.line">
+                                <field name="name">SOLDE C | 43</field>
+                                <field name="code">RO_BS_smle_J_43</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="domain_formula">-sum([ ('credit', '&gt;', 0.0), ('account_id.code', '=like', '117%'), ])</field>
+                            </record>
+                            <record id="account_financial_report_ro_bs_smle_J_44" model="account.report.line">
+                                <field name="name">SOLDE D | 44</field>
+                                <field name="code">RO_BS_smle_J_44</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="domain_formula">-sum([ ('debit', '&gt;', 0.0), ('account_id.code', '=like', '117%'), ])</field>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_J_45-46" model="account.report.line">
+                        <field name="name">VI. PROFIT OR LOSS AT THE END OF THE REPORTING PERIOD</field>
+                        <field name="code">RO_BS_smle_J_45-RO_BS_smle_J_46</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="expression_ids">
+                            <record id="account_financial_report_ro_bs_smle_J_45-46_balance"
+                                    model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">aggregation</field>
+                                <field name="formula">RO_BS_smle_J_45.balance - RO_BS_smle_J_46.balance</field>
+                            </record>
+                        </field>
+                        <field name="children_ids">
+                            <record id="account_financial_report_ro_bs_smle_J_45" model="account.report.line">
+                                <field name="name">SOLDE C | 45</field>
+                                <field name="code">RO_BS_smle_J_45</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="domain_formula">-sum([ ('credit', '&gt;', 0.0), '|', ('account_id.code', '=like', '121%'), '|', ('account_id.code', '=like', '6%'), ('account_id.code', '=like', '7%'), '!', '|', ('account_id.code', '=like', '754%'), ('account_id.code', '=like', '7815%'), ])</field>
+                            </record>
+                            <record id="account_financial_report_ro_bs_smle_J_46" model="account.report.line">
+                                <field name="name">SOLDE D | 46</field>
+                                <field name="code">RO_BS_smle_J_46</field>
+                                <field name="groupby">account_id</field>
+                                <field name="hierarchy_level" eval="3"/>
+                                <field name="foldable" eval="True"/>
+                                <field name="domain_formula">sum([ ('debit', '&gt;', 0.0), '|', ('account_id.code', '=like', '121%'), '|', ('account_id.code', '=like', '6%'), ('account_id.code', '=like', '7%'), '!', '|', ('account_id.code', '=like', '754%'), ('account_id.code', '=like', '7815%'), ])</field>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_J_47" model="account.report.line">
+                        <field name="name">Profits distribution | 47</field>
+                        <field name="code">RO_BS_smle_J_47</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="3"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">129</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_J_48_A" model="account.report.line">
+                        <field name="name">OWN EQUITY - TOTAL | 48</field>
+                        <field name="code">RO_BS_smle_J_48</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="aggregation_formula">RO_BS_smle_J_31.balance + RO_BS_smle_J_37.balance + RO_BS_smle_J_38.balance + RO_BS_smle_J_39.balance + RO_BS_smle_J_40.balance + RO_BS_smle_J_41.balance - RO_BS_smle_J_42.balance + RO_BS_smle_J_43.balance - RO_BS_smle_J_44.balance + RO_BS_smle_J_45.balance - RO_BS_smle_J_46.balance - RO_BS_smle_J_47.balance</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_J_49" model="account.report.line">
+                        <field name="name">Public Patrimony | 49</field>
+                        <field name="code">RO_BS_smle_J_49</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">1016</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_J_50" model="account.report.line">
+                        <field name="name">Private Patrimony | 50</field>
+                        <field name="code">RO_BS_smle_J_50</field>
+                        <field name="groupby">account_id</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="foldable" eval="True"/>
+                        <field name="account_codes_formula">1017</field>
+                    </record>
+                    <record id="account_financial_report_ro_bs_smle_J_51" model="account.report.line">
+                        <field name="name">EQUITY - TOTAL | 51</field>
+                        <field name="code">RO_BS_smle_J_51</field>
+                        <field name="hierarchy_level" eval="1"/>
+                        <field name="aggregation_formula">RO_BS_smle_J_48.balance + RO_BS_smle_J_49.balance + RO_BS_smle_J_50.balance</field>
+                    </record>
+                </field>
+            </record>
+        </field>
+    </record>
+</odoo>

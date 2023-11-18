@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cap57_employees_salary_payment_in_lieu_of_notice" model="hr.salary.rule">
+        <field name="category_id" ref="hr_payroll.ALW"/>
+        <field name="name">Payment in Lieu of Notice</field>
+        <field name="code">PAYMENT_IN_LIEU_OF_NOTICE</field>
+        <field name="sequence">1</field>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+domain = [
+    ('state', 'in', ['paid', 'done']),,
+    ('date_from', '&gt;=', payslip.date_from + relativedelta(months=-11, day=1)),
+    ('date_to', '&lt;=', payslip.date_to),
+    ('employee_id', '=', employee.id)
+]
+last_year_payslips = payslip.env['hr.payslip'].search(domain)
+gross = last_year_payslips._get_line_values(['713_GROSS'], compute_sum=True)['713_GROSS']['sum']['total']
+gross -= last_year_payslips._get_total_non_full_pay()
+actual_work_rate_list = [pl._get_actual_work_rate() for pl in last_year_payslips]
+avg_actual_work_rate = sum(actual_work_rate_list) / len(actual_work_rate_list)
+result = gross / avg_actual_work_rate / 12
+        </field>
+        <field name="struct_id" ref="l10n_hk_hr_payroll.hr_payroll_structure_cap57_payment_in_lieu_of_notice"/>
+    </record>
+
+    <record id="cap57_employees_payment_in_lieu_of_notice_net" model="hr.salary.rule">
+        <field name="category_id" ref="hr_payroll.NET"/>
+        <field name="name">Net</field>
+        <field name="code">NET</field>
+        <field name="sequence">200</field>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">result = categories['ALW']</field>
+        <field name="struct_id" ref="l10n_hk_hr_payroll.hr_payroll_structure_cap57_payment_in_lieu_of_notice"/>
+        <field name="appears_on_employee_cost_dashboard" eval="True"/>
+    </record>
+</odoo>

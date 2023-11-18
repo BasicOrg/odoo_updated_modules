@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="mrp_workorder.MrpDisplay">
+        <div class="o_action o_mrp_display h-100 overflow-auto">
+            <Layout display="display" className="'d-flex' + showEmployeesPanel ? 'o_component_with_search_panel' : ''">
+                <t t-if="group_mrp_routings" t-set-slot="control-panel-top-middle">
+                    <t t-call="{{ constructor.buttonTemplate }}"/>
+                </t>
+                <t t-set-slot="control-panel-additional-actions">
+                    <button class="btn btn-light oi oi-panel-right fa-flip-horizontal" t-if="group_mrp_routings" t-att-class="showEmployeesPanel ? 'active' : ''" t-on-click="toggleEmployeesPanel"/>
+                </t>
+                <t t-set-slot="layout-actions">
+                    <t t-if="group_mrp_routings">
+                        <ControlPanelButtons
+                            productions="productions"
+                            workorders="workorders"
+                            workcenters="state.workcenters"
+                            toggleWorkcenter="toggleWorkcenterDialog.bind(this)"
+                            selectWorkcenter="selectWorkcenter.bind(this)"
+                            activeWorkcenter="state.activeWorkcenter"
+                            employeeWorkorderCount="adminWorkorderIds.length"/>
+                    </t>
+                </t>
+                <t t-set-slot="control-panel-navigation-additional">
+                    <SearchBar/>
+                    <button class="btn btn-light fa fa-refresh" t-on-click="onClickRefresh"/>
+                    <button class="o_home_menu btn btn-light text-nowrap" t-on-click="close">
+                        <i class="fa fa-lg fa-sign-out me-md-1"/><span class="d-none d-md-inline">Close</span>
+                    </button>
+                </t>
+                <MrpDisplayEmployeesPanel t-if="this.group_mrp_routings &amp;&amp; showEmployeesPanel" employees="useEmployee.employees"
+                    setSessionOwner.bind="useEmployee.toggleSessionOwner"
+                    popupAddEmployee.bind="useEmployee.popupAddEmployee"
+                    logout.bind="useEmployee.logout"/>
+                <div class="o_mrp_display_records flex-grow-1 m-2">
+                    <t t-foreach="relevantSortedRecords" t-as="record" t-key="record.id">
+                        <MrpDisplayRecord
+                            addToValidationStack.bind="addToValidationStack"
+                            groups="groups"
+                            record="record"
+                            production="getproduction(record)"
+                            workorders="workorders"
+                            workcenters="workcenters"
+                            selectWorkcenter.bind="selectWorkcenter"
+                            selectUser.bind="useEmployee.openEmployeeSelection"
+                            updateEmployees.bind="useEmployee.getConnectedEmployees"
+                            sessionOwner="useEmployee.employees.admin"
+                            recordUpdated.bind="recordUpdated"
+                            removeFromValidationStack.bind="removeFromValidationStack"
+                            barcodeTarget="barcodeTargetRecord === record.resId"
+                            />
+                    </t>
+                    <t t-if="!relevantRecords.length">
+                        <t t-foreach="demoMORecords" t-as="record" t-key="record.id">
+                            <MrpDisplayRecord
+                            addToValidationStack.bind="addToValidationStack"
+                            groups="groups"
+                            record="record"
+                            production="getproduction(record)"
+                            workorders="record.data.workorder_ids.records"
+                            workcenters="workcenters"
+                            selectWorkcenter.bind="selectWorkcenter"
+                            selectUser.bind="useEmployee.openEmployeeSelection"
+                            updateEmployees.bind="useEmployee.getConnectedEmployees"
+                            sessionOwner="useEmployee.employees.admin"
+                            recordUpdated.bind="recordUpdated"
+                            removeFromValidationStack.bind="removeFromValidationStack"
+                            demoRecord="true"
+                            barcodeTarget="false"
+                            />
+                        </t>
+                        <div class="o_view_nocontent">
+                        <div class="o_nocontent_help">
+                            <p>
+                                Shop Floor Control Panel
+                            </p><p>
+                                Track work orders, show instructions and record operations: quality control, serial numbers, quantities consumed, etc. from here
+                            </p>
+                        </div>
+                    </div>
+                    </t>
+                </div>
+            </Layout>
+        </div>
+    </t>
+</templates>

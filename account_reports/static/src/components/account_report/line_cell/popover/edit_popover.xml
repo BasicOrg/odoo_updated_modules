@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="account_reports.AccountReportEditPopover">
+        <div class="account_report_popover_edit">
+            <t t-if="props.cell.figure_type === 'boolean'">
+                <!-- Yes -->
+                <div class="edit_popover_boolean">
+                    <input
+                        id="edit_popover_boolean_true"
+                        name="edit_popover_boolean"
+                        type="radio"
+                        value="1"
+                        t-att-checked="props.cell.no_format"
+                        t-ref="booleanTrue"
+                    />
+                    <label for="edit_popover_boolean_true">Yes</label>
+
+                    <!-- No -->
+                    <input
+                        id="edit_popover_boolean_false"
+                        name="edit_popover_boolean"
+                        type="radio"
+                        value="0"
+                        t-att-checked="!props.cell.no_format"
+                        t-ref="booleanFalse"
+                    />
+                    <label for="edit_popover_boolean_false">No</label>
+                </div>
+            </t>
+            <t t-else="">
+                <input class="o_input" type="text" t-ref="input"/>
+            </t>
+
+            <button class="btn btn-sm float-end" t-on-click="() => this.edit()">
+                Post
+            </button>
+        </div>
+    </t>
+</templates>

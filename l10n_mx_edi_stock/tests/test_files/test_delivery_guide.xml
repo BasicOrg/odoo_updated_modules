@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cartaporte20="http://www.sat.gob.mx/CartaPorte20" Moneda="XXX" Serie="NWH/OUT/" SubTotal="0" TipoDeComprobante="T" Total="0" Version="4.0" Exportacion="01" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd http://www.sat.gob.mx/CartaPorte20 http://www.sat.gob.mx/sitio_internet/cfd/CartaPorte/CartaPorte20.xsd http://www.sat.gob.mx/sitio_internet/cfd/CartaPorte20/CartaPorte20.xsd" Fecha="2016-12-31T18:00:00" Folio="___ignore___" NoCertificado="___ignore___" Certificado="___ignore___" LugarExpedicion="20928" Sello="___ignore___">
+	<cfdi:Emisor Nombre="ESCUELA KEMPER URGATE" RegimenFiscal="601" Rfc="EKU9003173C9"/>
+	<cfdi:Receptor UsoCFDI="S01" Nombre="ESCUELA KEMPER URGATE" Rfc="EKU9003173C9" DomicilioFiscalReceptor="20928" RegimenFiscalReceptor="601"/>
+	<cfdi:Conceptos>
+		<cfdi:Concepto Importe="0.00" ValorUnitario="0.00" ObjetoImp="01" NoIdentificacion="01" Cantidad="10.000000" ClaveProdServ="56101500" ClaveUnidad="H87" Descripcion="product_c" Unidad="Units"/>
+	</cfdi:Conceptos>
+	<cfdi:Complemento>
+		<cartaporte20:CartaPorte Version="2.0" TranspInternac="No" TotalDistRec="120">
+			<cartaporte20:Ubicaciones>
+				<cartaporte20:Ubicacion TipoUbicacion="Origen" IDUbicacion="___ignore___" FechaHoraSalidaLlegada="2016-12-31T18:00:00" RFCRemitenteDestinatario="EKU9003173C9">
+					<cartaporte20:Domicilio Calle="Campobasso Norte 3206 - 9000" CodigoPostal="20928" Estado="AGU" Pais="MEX"/>
+				</cartaporte20:Ubicacion>
+				<cartaporte20:Ubicacion TipoUbicacion="Destino" IDUbicacion="___ignore___" DistanciaRecorrida="120" FechaHoraSalidaLlegada="2016-12-31T18:00:00" RFCRemitenteDestinatario="ICV060329BY0">
+					<cartaporte20:Domicilio Calle="Street Calle" CodigoPostal="33826" Estado="CHH" Pais="MEX"/>
+				</cartaporte20:Ubicacion>
+			</cartaporte20:Ubicaciones>
+			<cartaporte20:Mercancias NumTotalMercancias="1" PesoBrutoTotal="10.000" UnidadPeso="KGM">
+				<cartaporte20:Mercancia BienesTransp="56101500" Cantidad="10.000000" ClaveUnidad="H87" Descripcion="product_c" PesoEnKg="10.000">
+					<cartaporte20:CantidadTransporta Cantidad="10.000000" IDOrigen="___ignore___" IDDestino="DE000005"/>
+				</cartaporte20:Mercancia>
+				<cartaporte20:Autotransporte NumPermisoSCT="DEMOPERMIT" PermSCT="TPAF10">
+					<cartaporte20:IdentificacionVehicular AnioModeloVM="2020" ConfigVehicular="T3S1" PlacaVM="ABC123"/>
+					<cartaporte20:Seguros AseguraRespCivil="DEMO INSURER" PolizaRespCivil="DEMO POLICY"/>
+					<cartaporte20:Remolques>
+						<cartaporte20:Remolque SubTipoRem="CTR003" Placa="trail1"/>
+					</cartaporte20:Remolques>
+				</cartaporte20:Autotransporte>
+			</cartaporte20:Mercancias>
+			<cartaporte20:FiguraTransporte>
+				<cartaporte20:TiposFigura TipoFigura="01" RFCFigura="VAAM130719H60" NumLicencia="a234567890">
+                            </cartaporte20:TiposFigura>
+				<cartaporte20:TiposFigura TipoFigura="02" RFCFigura="EKU9003173C9">
+					<cartaporte20:PartesTransporte ParteTransporte="PT05"/>
+				</cartaporte20:TiposFigura>
+			</cartaporte20:FiguraTransporte>
+		</cartaporte20:CartaPorte>
+		<tfd:TimbreFiscalDigital xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd" Version="1.1" UUID="00000000-0000-0000-0000-000000000001" FechaTimbrado="___ignore___" RfcProvCertif="___ignore___" SelloCFD="___ignore___"/>
+	</cfdi:Complemento>
+</cfdi:Comprobante>
